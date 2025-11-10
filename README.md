@@ -1,4 +1,4 @@
-Step by Step execution Instructions:
+# Step by Step execution Instructions:
 Tools: Docker, Minikube, Kubernetes and Prometheus Runbook
 
 The following lists the commands and steps needed to run the microservices project with Docker, Minikube (local Kubernetes) and Prometheus on a Windows machine using PowerShell.
@@ -28,13 +28,13 @@ The folder should contain subfolders like:
 Open PowerShell and run:
 cd "F:\mtech\scalable service\microservices_dockerized"
 
-# Use Docker as driver (only once)
+## Use Docker as driver (only once)
 minikube config set driver docker
 
-# Start the Minikube cluster
+## Start the Minikube cluster
 minikube start
 
-# Point Docker CLI to Minikube Docker daemon (run in each new session)
+## Point Docker CLI to Minikube Docker daemon (run in each new session)
 minikube docker-env --shell powershell | Invoke-Expression
 4. Build Docker Images for All Services
 From the project root:
@@ -46,16 +46,16 @@ docker build -t seating-service:latest  -f seating-service/Dockerfile      .
 docker build -t order-service:latest    -f order-service/Dockerfile        .
 docker build -t payment-service:latest  -f payment-service/Dockerfile      .
 
-# Verify images
+## Verify images
 docker images
 5. Apply Kubernetes Manifests
 Apply ConfigMap, Deployments, Services and Prometheus manifests:
 cd "F:\mtech\scalable service\microservices_dockerized"
 
-# ConfigMap for shared configuration
+## ConfigMap for shared configuration
 kubectl apply -f k8s/configmap.yaml
 
-# Microservices
+## Microservices
 kubectl apply -f k8s/user-service-deployment.yaml    -f k8s/user-service-service.yaml
 kubectl apply -f k8s/catalog-service-deployment.yaml -f k8s/catalog-service-service.yaml
 kubectl apply -f k8s/seating-service-deployment.yaml -f k8s/seating-service-service.yaml
