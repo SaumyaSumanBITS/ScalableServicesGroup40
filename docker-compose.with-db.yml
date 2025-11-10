@@ -1,0 +1,136 @@
+version: "3.8"
+
+# This compose file runs each microservice along with its own Postgres database.
+# It demonstrates the database-per-service principle. Each service depends on
+# its DB container and points at it via its connection string.  You can use
+# this file for local development if you do not have access to a hosted
+# Postgres instance.
+
+services:
+  # Database for the user service
+  user-db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+
+  # Database for the catalog service
+  catalog-db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: catalogdb
+    volumes:
+      - catalog-db-data:/var/lib/postgresql/data
+
+  # Database for the seating service
+  seating-db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: seatingdb
+    volumes:
+      - seating-db-data:/var/lib/postgresql/data
+
+  # Database for the order service
+  order-db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orderdb
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+
+  # Database for the payment service
+  payment-db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: paymentdb
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+
+  # User service container
+  user-service:
+    build:
+      context: ./user-service
+    environment:
+      USER_PORT: 3001
+      USER_DB_URL: postgres://postgres:postgres@user-db:5432/usersdb
+    ports:
+      - "3001:3001"
+    depends_on:
+      - user-db
+
+  # Catalog service container
+  catalog-service:
+    build:
+      context: ./catalog-service
+    environment:
+      CATALOG_PORT: 3002
+      CATALOG_DB_URL: postgres://postgres:postgres@catalog-db:5432/catalogdb
+    ports:
+      - "3002:3002"
+    depends_on:
+      - catalog-db
+
+  # Seating service container
+  seating-service:
+    build:
+      context: ./seating-service
+    environment:
+      SEATING_PORT: 3003
+      SEATING_DB_URL: postgres://postgres:postgres@seating-db:5432/seatingdb
+    ports:
+      - "3003:3003"
+    depends_on:
+      - seating-db
+
+  # Payment service container
+  payment-service:
+    build:
+      context: ./payment-service
+    environment:
+      PAYMENT_PORT: 3005
+      PAYMENT_DB_URL: postgres://postgres:postgres@payment-db:5432/paymentdb
+    ports:
+      - "3005:3005"
+    depends_on:
+      - payment-db
+
+  # Order service container
+  order-service:
+    build:
+      context: ./order-service
+    environment:
+      ORDER_PORT: 3004
+      ORDER_DB_URL: postgres://postgres:postgres@order-db:5432/orderdb
+      SEATING_URL: http://seating-service:3003
+      PAYMENT_URL: http://payment-service:3005
+      CATALOG_URL: http://catalog-service:3002
+    ports:
+      - "3004:3004"
+    depends_on:
+      - order-db
+      - seating-service
+      - payment-service
+      - catalog-service
+
+volumes:
+  user-db-data:
+  catalog-db-data:
+  seating-db-data:
+  order-db-data:
+  payment-db-data:

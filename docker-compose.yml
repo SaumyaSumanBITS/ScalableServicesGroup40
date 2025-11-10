@@ -1,0 +1,71 @@
+version: "3.8"
+
+# This compose file spins up each microservice as its own container.
+# It uses the `.env` file in the repository root for database URLs and ports.
+# Cross‑service URLs are defined for the order service so that it can
+# communicate with the seating and payment services by container name rather
+# than `localhost`.
+services:
+  user-service:
+    build:
+      context: ./user-service
+    env_file:
+      - .env
+    environment:
+      # Explicitly set port and DB URL for clarity; values come from .env
+      - USER_PORT=${USER_PORT:-3001}
+      - USER_DB_URL=${USER_DB_URL}
+    ports:
+      - "3001:3001"
+
+  catalog-service:
+    build:
+      context: ./catalog-service
+    env_file:
+      - .env
+    environment:
+      - CATALOG_PORT=${CATALOG_PORT:-3002}
+      - CATALOG_DB_URL=${CATALOG_DB_URL}
+    ports:
+      - "3002:3002"
+
+  seating-service:
+    build:
+      context: ./seating-service
+    env_file:
+      - .env
+    environment:
+      - SEATING_PORT=${SEATING_PORT:-3003}
+      - SEATING_DB_URL=${SEATING_DB_URL}
+    ports:
+      - "3003:3003"
+
+  payment-service:
+    build:
+      context: ./payment-service
+    env_file:
+      - .env
+    environment:
+      - PAYMENT_PORT=${PAYMENT_PORT:-3005}
+      - PAYMENT_DB_URL=${PAYMENT_DB_URL}
+    ports:
+      - "3005:3005"
+
+  order-service:
+    build:
+      context: ./order-service
+    env_file:
+      - .env
+    environment:
+      - ORDER_PORT=${ORDER_PORT:-3004}
+      - ORDER_DB_URL=${ORDER_DB_URL}
+      # Override cross‑service URLs to use container names
+      - SEATING_URL=http://seating-service:3003
+      - PAYMENT_URL=http://payment-service:3005
+      - CATALOG_URL=http://catalog-service:3002
+    ports:
+      - "3004:3004"
+    depends_on:
+      - seating-service
+      - payment-service
+      - catalog-service

@@ -1,0 +1,26 @@
+{
+  "name": "microservices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node --test",
+    "seed": "node scripts/seed.js",
+    "start:all": "concurrently -n user,catalog,seating,order,payment -c blue,green,yellow,magenta,cyan \"npm:start --prefix user-service\" \"npm:start --prefix catalog-service\" \"npm:start --prefix seating-service\" \"npm:start --prefix order-service\" \"npm:start --prefix payment-service\""
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "pg": "^8.10.0",
+    "uuid": "^8.3.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

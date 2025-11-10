@@ -1,0 +1,6 @@
+{
+  "add_these_dependencies_to_each_service_package_json": {
+    "prom-client": "^15.1.0",
+    "uuid": "^9.0.1"
+  }
+}
