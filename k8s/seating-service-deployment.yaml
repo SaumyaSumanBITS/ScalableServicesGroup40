@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seating-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seating-service
+  template:
+    metadata:
+      labels:
+        app: seating-service
+    spec:
+      containers:
+        - name: seating-service
+          image: seating-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3003
+          envFrom:
+            - configMapRef:
+                name: microservices-config

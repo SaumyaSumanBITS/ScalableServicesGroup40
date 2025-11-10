@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservices-config
+data:
+  # === DATABASE URLS (FILL THESE WITH YOUR REAL CONNECTION STRINGS) ===
+  USER_DB_URL: "postgresql://user:password@host:5432/userdb?schema=public"
+  CATALOG_DB_URL: "postgresql://user:password@host:5432/catalogdb?schema=public"
+  SEATING_DB_URL: "postgresql://user:password@host:5432/seatingdb?schema=public"
+  ORDER_DB_URL: "postgresql://user:password@host:5432/orderdb?schema=public"
+  PAYMENT_DB_URL: "postgresql://user:password@host:5432/paymentdb?schema=public"
+
+  # === INTERNAL SERVICE URLS (K8s service names) ===
+  SEATING_URL: http://seating-service:3003
+  PAYMENT_URL: http://payment-service:3005
+  CATALOG_URL: http://catalog-service:3002
+
+  # === PORTS (your existing .env values) ===
+  USER_PORT: "3001"
+  CATALOG_PORT: "3002"
+  SEATING_PORT: "3003"
+  ORDER_PORT: "3004"
+  PAYMENT_PORT: "3005"
