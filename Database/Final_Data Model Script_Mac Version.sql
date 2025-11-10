@@ -183,3 +183,4 @@ ON src.seatid = dest.seatid
 WHERE dest.seatid IS NULL;
 END $$
 DELIMITER ;
+
